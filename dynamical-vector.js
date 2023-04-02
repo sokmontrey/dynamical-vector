@@ -1,7 +1,9 @@
-function Vector2(x=0, y=0){
+window.Vector2 = function Vector2(x=0, y=0){
     this.x = x;
     this.y = y;
 }
+
+const Vector2 = window.Vector2;
 
 /*
 Static Methods
