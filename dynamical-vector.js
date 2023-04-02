@@ -1,4 +1,4 @@
-export function Vector2(x=0, y=0){
+function Vector2(x=0, y=0){
     this.x = x;
     this.y = y;
 }
@@ -163,3 +163,5 @@ Vector2.prototype = {
         return Vector2.isHorizontal(this, other);
     },
 };
+
+module.export = Vector2;
