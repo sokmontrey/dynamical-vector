@@ -1,167 +1,165 @@
-window.Vector2 = function Vector2(x=0, y=0){
-    this.x = x;
-    this.y = y;
-}
+class Vector2{
+    constructor(x=0, y=0){
+        this.x = x;
+        this.y = y;
+    }
 
-const Vector2 = window.Vector2;
+    /*
+    Static Methods
+    */
 
-/*
-Static Methods
-*/
+    static add (a, b){
+        if(b instanceof Vector2) return new Vector2(a.x + b.x, a.y+b.y);
+        else return new Vector2(a.x+b, a.y+b);
+    }
+    static subtract (a, b){
+        if(b instanceof Vector2) return new Vector2(a.x-b.x, a.y-b.y);
+        else return new Vector2(a.x-b, a.y-b);
+    }
+    static invert (a){
+        return new Vector2(-a.x, -a.y);
+    }
+    static multiply (a, b){
+        if(b instanceof Vector2) return new Vector2(a.x*b.x, a.y*b.y);
+        else return new Vector2(a.x*b, a.y*b);
+    }
+    static divide (a, b){
+        if(b instanceof Vector2) return new Vector2(a.x/b.x, a.y/b.y);
+        else return new Vector2(a.x/b, a.y/b);
+    }
+    static reciprocal (a){
+        return new Vector2(1/a.x, 1/a.y);
+    }
+    static dot (a, b){
+        return a.x*b.x + a.y*b.y;
+    }
+    static magnitude (a){
+        return Math.sqrt(a.x*a.x + a.y*a.y);
+    }
+    static normalize (a){
+        const mag = Vector2.magnitude(a);
+        return new Vector2(a.x/mag, a.y/mag);
+    }
+    static min (a,b){
+        return new Vector2(Math.min(a.x, b.x), Math.min(a.y, b.y));
+    }
+    static max(a,b){
+        return new Vector2(Math.max(a.x, b.x), Math.max(a.y, b.y));
+    }
+    static distance (a,b){
+        return Vector2.magnitude(Vector2.subtract(a, b));
+    }
+    static clone (a){
+        return new Vector2(a.x, a.y);
+    }
+    static assign (a, b){
+        a.x = b.x;
+        a.y = b.y;
+    }
+    /*
+    Find a reflection vector A with V as the mirror
+        (imagine -A bound of surface of V)
+    */
+    static reflect (a, v){
+        return Vector2.subtract(a,
+            Vector2.multiply(
+                Vector2.multiply( 
+                    v, 
+                    Vector2.dot(a, v)
+                ),
+                2
+            )
+        );
+    }
+    static cut (a, scalar){
+        const l = Vector2.magnitude(a);
+        return Vector2.multiply(a, (l - scalar) / l);
+    }
+    static expand (a, scalar){
+        const l = Vector2.magnitude(a);
+        return Vector2.multiply(a, (l + scalar) / l);
+    }
+    //Scalar the Vector2 to a certain length keeping the same angle
+    static scaleMagnitudeTo (a, scalar){
+        const l = Vector2.magnitude(a);
+        return Vector2.multiply(a, scalar / l);
+    }
+    static isEqual (a, b){
+        if(b instanceof Vector2) return a.x == b.x && a.y == b.y;
+        else return a.x == b && a.y == b;
+    }
+    static isVertical (a, b){
+        return a.x == b.x;
+    }
+    static isHorizontal(a, b){
+        return a.y == b.y;
+    }
 
-Vector2.add = function(a, b){
-    if(b instanceof Vector2) return new Vector2(a.x + b.x, a.y+b.y);
-    else return new Vector2(a.x+b, a.y+b);
-}
-Vector2.subtract = function(a, b){
-    if(b instanceof Vector2) return new Vector2(a.x-b.x, a.y-b.y);
-    else return new Vector2(a.x-b, a.y-b);
-}
-Vector2.invert = function(a){
-    return new Vector2(-a.x, -a.y);
-}
-Vector2.multiply = function(a, b){
-    if(b instanceof Vector2) return new Vector2(a.x*b.x, a.y*b.y);
-    else return new Vector2(a.x*b, a.y*b);
-}
-Vector2.divide = function(a, b){
-    if(b instanceof Vector2) return new Vector2(a.x/b.x, a.y/b.y);
-    else return new Vector2(a.x/b, a.y/b);
-}
-Vector2.reciprocal = function(a){
-    return new Vector2(1/a.x, 1/a.y);
-}
-Vector2.dot = function(a, b){
-    return a.x*b.x + a.y*b.y;
-}
-Vector2.magnitude = function(a){
-    return Math.sqrt(a.x*a.x + a.y*a.y);
-}
-Vector2.normalize = function(a){
-    const mag = Vector2.magnitude(a);
-    return new Vector2(a.x/mag, a.y/mag);
-}
-Vector2.min = function(a,b){
-    return new Vector2(Math.min(a.x, b.x), Math.min(a.y, b.y));
-}
-Vector2.max= function(a,b){
-    return new Vector2(Math.max(a.x, b.x), Math.max(a.y, b.y));
-}
-Vector2.distance = function(a,b){
-    return Vector2.magnitude(Vector2.subtract(a, b));
-}
-Vector2.clone = function(a){
-    return new Vector2(a.x, a.y);
-}
-Vector2.assign = function(a, b){
-    a.x = b.x;
-    a.y = b.y;
-}
-/*
-Find a reflection vector A with V as the mirror
-    (imagine -A bound of surface of V)
-*/
-Vector2.reflect = function(a, v){
-    return Vector2.subtract(a,
-        Vector2.multiply(
-            Vector2.multiply( 
-                v, 
-                Vector2.dot(a, v)
-            ),
-            2
-        )
-    );
-}
-Vector2.cut = function(a, scalar){
-    const l = Vector2.magnitude(a);
-    return Vector2.multiply(a, (l - scalar) / l);
-}
-Vector2.expand = function(a, scalar){
-    const l = Vector2.magnitude(a);
-    return Vector2.multiply(a, (l + scalar) / l);
-}
-//Scalar the Vector2 to a certain length keeping the same angle
-Vector2.scaleMagnitudeTo = function(a, scalar){
-    const l = Vector2.magnitude(a);
-    return Vector2.multiply(a, scalar / l);
-}
-Vector2.isEqual = function(a, b){
-    if(b instanceof Vector2) return a.x == b.x && a.y == b.y;
-    else return a.x == b && a.y == b;
-}
-Vector2.isVertical = function(a, b){
-    return a.x == b.x;
-}
-Vector2.isHorizontal= function(a, b){
-    return a.y == b.y;
-}
+    /*
+    Instance Methods
+    */
 
-/*
-Instance Methods
-*/
-
-Vector2.prototype = {
-    add: function(other){
+    add (other){
         return Vector2.add(this, other);
-    },
-    subtract: function(other){
+    }
+    subtract (other){
         return Vector2.subtract(this, other);
-    },
-    invert: function(){
+    }
+    invert (){
         return Vector2.invert(this);
-    },
-    multiply: function(other){
+    }
+    multiply (other){
         return Vector2.multiply(this, other);
-    },
-    divide: function(other){
+    }
+    divide (other){
         return Vector2.divide(this, other);
-    },
-    reciprocal: function(){
+    }
+    reciprocal (){
         return Vector2.reciprocal(this);
-    },
-    dot: function(other){
+    }
+    dot (other){
         return Vector2.dot(this, other);
-    },
-    magnitude: function(){
+    }
+    magnitude (){
         return Vector2.magnitude(this);
-    },
-    normalize: function(){
+    }
+    normalize (){
         return Vector2.normalize(this);
-    },
-    min: function(){
+    }
+    min (){
         return Vector2.min(this);
-    },
-    max: function(){
+    }
+    max (){
         return Vector2.max(this);
-    },
-    distance: function(other){
+    }
+    distance (other){
         return Vector2.distance(this, other);
-    },
-    clone: function(){
+    }
+    clone (){
         return Vector2.clone(this);
-    },
-    assign: function(other){
+    }
+    assign (other){
         Vector2.assign(this, other);
-    },
-    reflect: function(other){
+    }
+    reflect (other){
         return Vector2.reflect(this, other);
-    },
-    cut: function(scalar){
+    }
+    cut (scalar){
         return Vector2.cut(this, scalar);
-    },
-    expand: function(scalar){
+    }
+    expand (scalar){
         return Vector2.expand(this, scalar);
-    },
-    scaleMagnitudeTo: function(scalar){
+    }
+    scaleMagnitudeTo (scalar){
         return Vector2.scaleMagnitudeTo(this, scalar);
-    },
-    isEqual: function(other){
+    }
+    isEqual (other){
         return Vector2.isEqual(this, other);
-    },
-    isVertical: function(other){
+    }
+    isVertical (other){
         return Vector2.isVertical(this, other);
-    },
-    isHorizontal: function(other){
+    }
+    isHorizontal (other){
         return Vector2.isHorizontal(this, other);
-    },
-};
+    }
+}
