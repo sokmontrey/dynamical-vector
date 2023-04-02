@@ -163,5 +163,3 @@ Vector2.prototype = {
         return Vector2.isHorizontal(this, other);
     },
 };
-
-module.export = Vector2;
