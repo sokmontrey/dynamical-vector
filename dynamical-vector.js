@@ -95,6 +95,39 @@ class Vector2{
         return a.y == b.y;
     }
 
+    static segmentIntersection(a, b, c, d){
+        let slope1 = (b.y - a.y) / (b.x - a.x);
+        let slope2 = (d.y - c.y) / (d.x - c.x);
+
+        if (slope1 === slope2) {
+            return false;
+        }
+
+        if (!isFinite(slope1)) {
+            [a, b] = [c, d];
+            [c, d] = [a, b];
+            slope1 = (b.y - a.y) / (b.x - a.x);
+            slope2 = (d.y - c.y) / (d.x - c.x);
+        }
+
+        const yIntercept1 = a.y - slope1 * a.x;
+        const yIntercept2 = c.y - slope2 * c.x;
+
+        const x = (yIntercept2 - yIntercept1) / (slope1 - slope2);
+        const y = slope1 * x + yIntercept1;
+
+        if (
+            x < Math.min(a.x, b.x) ||
+            x > Math.max(a.x, b.x) ||
+            x < Math.min(c.x, d.x) ||
+            x > Math.max(c.x, d.x)
+        ) {
+            return false;
+        }
+
+        return new Vector2(x, y);
+    }
+
     /*
     Instance Methods
     */
