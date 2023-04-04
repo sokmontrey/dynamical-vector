@@ -95,37 +95,45 @@ class Vector2{
         return a.y == b.y;
     }
 
-    static segmentIntersection(a, b, c, d){
+    static getLineIntersection(a, b, c, d){
         let slope1 = (b.y - a.y) / (b.x - a.x);
         let slope2 = (d.y - c.y) / (d.x - c.x);
 
-        if (slope1 === slope2) {
-            return false;
-        }
+        let x, y;
 
-        if (!isFinite(slope1)) {
-            [a, b] = [c, d];
-            [c, d] = [a, b];
-            slope1 = (b.y - a.y) / (b.x - a.x);
-            slope2 = (d.y - c.y) / (d.x - c.x);
-        }
+        //use the formula: y - A.y = m (x - A.x)
+        if(!isFinite(slope1)){ //AB segment is a vertical segment
+            // the second segment is also vertical. 
+            if(!isFinite(slope2)) return false; 
 
-        const yIntercept1 = a.y - slope1 * a.x;
-        const yIntercept2 = c.y - slope2 * c.x;
-
-        const x = (yIntercept2 - yIntercept1) / (slope1 - slope2);
-        const y = slope1 * x + yIntercept1;
-
-        if (
-            x < Math.min(a.x, b.x) ||
-            x > Math.max(a.x, b.x) ||
-            x < Math.min(c.x, d.x) ||
-            x > Math.max(c.x, d.x)
-        ) {
-            return false;
+            x = a.x;
+            y = slope2 * (a.x - c.x) + c.y;
+        }else if(!isFinite(slope2)){ //CD segment is a vertical segment
+            x = c.x;
+            y = slope1 * (c.x - a.x) + a.y;
+        }else{ //None of the the segment is a vertical segment
+            x = (a.y - c.y + slope2 * c.x - slope1 * a.x) / (slope2 - slope1);
+            y = slope1 * (x - a.x) + a.y;
         }
 
         return new Vector2(x, y);
+    }
+    // static isPointBetweenSegment(p, a, b){
+    //     return (
+    //         p.x >= Math.min(a.x, b.x) &&
+    //         p.x <= Math.max(a.x, b.x) &&
+    //         p.y >= Math.min(a.y, b.y) &&
+    //         p.y <= Math.max(a.y, b.y)
+    //     );
+    // }
+
+    static isPointBehindLine(p, a, n){
+        //TODO: behind or on
+        return p.subtract(a).dot(n) <= 0;
+    }
+
+    static isPointInfrontLine(p, a, n){
+        return p.subtract(a).dot(n) > 0;
     }
 
     /*
